@@ -1,0 +1,35 @@
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+
+# Python / FastAPI / Pytest
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local Databases & Logs
+*.db
+*.sqlite
+*.sqlite3
+*.log
+
+# Node / React / TypeScript
+frontend/node_modules/
+node_modules/
+dist/
+build/
+.vite/
+*.tsbuildinfo
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
