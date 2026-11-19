@@ -1,0 +1,141 @@
+{
+  "case_id": "suspicious_email",
+  "title": "The Suspicious Email",
+  "difficulty": "Beginner",
+  "unlock_requirement": null,
+  "max_score": 150,
+  "completion_bonus": 25,
+  "briefing": "A finance coordinator at Acme Corp Test reported an urgent email asking employees to verify payroll credentials before a system freeze. Investigate the message, headers, and related records using simulated evidence only—do not visit external links or interact with live systems.",
+  "learning_objectives": [
+    "Identify spoofing or lookalike domains in sender headers and display names.",
+    "Spot urgency-driven social engineering tactics and mismatched link destinations.",
+    "Distinguish relevant phishing clues from routine, unrelated workplace records."
+  ],
+  "evidence": [
+    {
+      "evidence_id": "ev_email_01",
+      "type": "email",
+      "title": "Reported Payroll Verification Email",
+      "is_key_clue": true,
+      "points": 20,
+      "content": {
+        "from_display": "Acme IT Security",
+        "from_address": "security-alert@acm3-corp-support.example.com",
+        "to_address": "jordan.lee@acme-corp.test",
+        "reply_to": "helpdesk-reset@mail-verify.example.com",
+        "subject": "ACTION REQUIRED: Payroll Portal Locked in 2 Hours",
+        "timestamp": "2026-11-18T08:14:00Z",
+        "body": "Dear Team Member, due to an urgent security update, your payroll account will be suspended in 2 hours unless you confirm your password immediately at https://login.acm3-corp-support.example.com/payroll-verify",
+        "links": [
+          {
+            "anchor_text": "https://login.acm3-corp-support.example.com/payroll-verify",
+            "actual_target": "http://198.51.100.42/auth/reset-token",
+            "protocol": "http"
+          }
+        ]
+      }
+    },
+    {
+      "evidence_id": "ev_headers_02",
+      "type": "email_headers",
+      "title": "Message Delivery Headers",
+      "is_key_clue": true,
+      "points": 20,
+      "content": {
+        "spf_result": "fail (domain acm3-corp-support.example.com does not designate 203.0.113.88 as permitted sender)",
+        "dkim_result": "none",
+        "dmarc_result": "fail",
+        "originating_ip": "203.0.113.88",
+        "return_path": "bounce-9914@mail-verify.example.com"
+      }
+    },
+    {
+      "evidence_id": "ev_employee_03",
+      "type": "employee_record",
+      "title": "Employee Directory: Jordan Lee",
+      "is_key_clue": false,
+      "points": 0,
+      "content": {
+        "employee_id": "EMP-1042",
+        "name": "Jordan Lee",
+        "role": "Payroll Coordinator",
+        "department": "Finance",
+        "manager": "Taylor Brooks",
+        "status": "Active"
+      }
+    },
+    {
+      "evidence_id": "ev_ticket_04",
+      "type": "security_alert",
+      "title": "Routine Facilities Notice",
+      "is_key_clue": false,
+      "points": 0,
+      "content": {
+        "alert_id": "INFO-408",
+        "summary": "Scheduled HVAC maintenance on Floor 3 between 17:00 and 19:00 UTC.",
+        "severity": "Informational"
+      }
+    }
+  ],
+  "decisions": [
+    {
+      "decision_id": "dec_phishing_classification",
+      "prompt": "How should this message be classified and handled?",
+      "options": [
+        {
+          "id": "opt_phish_report",
+          "label": "Phishing attempt — quarantine the message, block the spoofed/lookalike domain and IP, and warn users not to enter credentials."
+        },
+        {
+          "id": "opt_legit_approve",
+          "label": "Legitimate IT notice — approve the sender and instruct employees to reset passwords via the link."
+        },
+        {
+          "id": "opt_ignore_archive",
+          "label": "Harmless spam — archive the email with no further action or user notice."
+        }
+      ],
+      "correct_option_id": "opt_phish_report",
+      "points": 40,
+      "penalty": 15,
+      "feedback_correct": "Correct. The lookalike domain ('acm3-corp-support.example.com'), failing SPF/DMARC checks, mismatched link target ('198.51.100.42'), and artificial 2-hour urgency are classic phishing indicators.",
+      "feedback_incorrect": "Not quite. Look closely at the sender address ('acm3-corp-support.example.com' vs. 'acme-corp.test'), SPF/DMARC failures, and the urgent credential request—those point to phishing rather than a legitimate notice or harmless spam."
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "type": "general_direction",
+      "cost": 5,
+      "text": "Start by checking whether the sender's identity, email authentication checks, and link destination match the organization's official domain."
+    },
+    {
+      "level": 2,
+      "type": "evidence_category",
+      "cost": 10,
+      "text": "Focus on the email content and message delivery headers rather than routine employee or facility records."
+    },
+    {
+      "level": 3,
+      "type": "specific_evidence",
+      "cost": 15,
+      "text": "Inspect 'ev_email_01' and 'ev_headers_02'—specifically look at the '1' replaced with '3' in the domain, SPF/DMARC failures, and the raw IP link target."
+    },
+    {
+      "level": 4,
+      "type": "concept_explanation",
+      "cost": 15,
+      "text": "Phishing often combines typosquatting/lookalike domains and artificial time pressure to trick users into handing over credentials on a deceptive page."
+    }
+  ],
+  "conclusion": {
+    "prompt": "Summarize your final investigation conclusion for 'The Suspicious Email'.",
+    "required_elements": [
+      "phishing",
+      "lookalike domain or spoofed sender",
+      "credential harvesting risk"
+    ],
+    "points": 45,
+    "model_summary": "A simulated phishing email impersonating Acme IT Security used a lookalike domain ('acm3-corp-support.example.com'), failed SPF/DMARC checks, a mismatched IP link target, and urgent language to attempt credential theft."
+  }
+}
