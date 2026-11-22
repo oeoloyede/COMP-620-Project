@@ -1,0 +1,82 @@
+{
+  "case_id": "midnight_login",
+  "title": "The Midnight Login",
+  "difficulty": 2,
+  "unlock_requirement": "suspicious_email",
+  "completion_bonus": 30,
+  "briefing": "A routine morning review at Northbridge Fictional Corp flagged unusual authentication activity around midnight. Investigate the simulated login records, separate key clues from routine activity, and recommend a safe response.",
+  "learning_objectives": [
+    "Analyze timestamps, failed and successful login attempts, usernames, and source IPs in authentication logs",
+    "Distinguish suspicious off-hours sign-in activity from normal routine operations",
+    "Choose a safe account-protection response and explain the reasoning"
+  ],
+  "evidence": [
+    {
+      "id": "ev_auth_01",
+      "type": "auth_log",
+      "title": "Midnight Authentication Log Extract",
+      "content": "2026-11-21 00:04:12 UTC | user=d.chen@northbridge.example.test | src_ip=198.51.100.42 | auth_method=password | status=FAILURE\n2026-11-21 00:04:19 UTC | user=d.chen@northbridge.example.test | src_ip=198.51.100.42 | auth_method=password | status=FAILURE\n2026-11-21 00:04:26 UTC | user=d.chen@northbridge.example.test | src_ip=198.51.100.42 | auth_method=password | status=FAILURE\n2026-11-21 00:04:33 UTC | user=d.chen@northbridge.example.test | src_ip=198.51.100.42 | auth_method=password | status=SUCCESS",
+      "is_key_clue": true,
+      "points": 15
+    },
+    {
+      "id": "ev_employee_02",
+      "type": "employee_record",
+      "title": "Employee Profile & Sign-In Baseline",
+      "content": "Employee: Devon Chen (d.chen@northbridge.example.test)\nDepartment: Accounting\nStandard Work Schedule: Mon-Fri 08:30-17:00 local (no overnight shift)\nTypical Access Baseline: Internal subnet 10.20.4.0/24 during business hours",
+      "is_key_clue": true,
+      "points": 15
+    },
+    {
+      "id": "ev_log_03",
+      "type": "auth_log",
+      "title": "Scheduled Backup Service Log",
+      "content": "2026-11-21 01:00:00 UTC | user=svc_backup@northbridge.example.test | src_ip=10.20.1.15 | auth_method=ssh_key | status=SUCCESS",
+      "is_key_clue": false,
+      "points": 0
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec_01",
+      "prompt": "Given the failed login attempts followed by a successful login from an external IP just after midnight, what should you do first?",
+      "options": [
+        "Ignore the alert because a login eventually succeeded",
+        "Reset the account password, revoke active sessions, and escalate to security/IT for investigation",
+        "Delete the authentication logs to clear the alert"
+      ],
+      "correct_option_index": 1,
+      "points": 20,
+      "penalty": 10,
+      "feedback_correct": "Resetting credentials, revoking sessions, and escalating to security/IT helps contain a potential account compromise while preserving logs.",
+      "feedback_incorrect": "Ignoring suspicious off-hours login bursts or deleting logs can leave a compromised account active or remove helpful evidence."
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "cost": 5,
+      "text": "Start by checking the timestamps and looking for failed login attempts right before a successful sign-in."
+    },
+    {
+      "level": 2,
+      "cost": 10,
+      "text": "Compare the authentication log extract and employee baseline against routine scheduled service activity."
+    },
+    {
+      "level": 3,
+      "cost": 15,
+      "text": "Inspect the repeated failures followed by a success for d.chen from external IP 198.51.100.42 outside normal hours."
+    },
+    {
+      "level": 4,
+      "cost": 20,
+      "text": "Repeated failed logins followed by a successful sign-in from an unusual IP or off-hours time can indicate credential guessing or account compromise."
+    }
+  ],
+  "conclusion": {
+    "prompt": "Summarize what the login evidence shows, why it is suspicious, and what response action you recommend.",
+    "required_keywords": ["login", "ip", "password"],
+    "points": 25
+  }
+}
