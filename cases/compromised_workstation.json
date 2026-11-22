@@ -1,0 +1,82 @@
+{
+  "case_id": "compromised_workstation",
+  "title": "The Compromised Workstation",
+  "difficulty": 3,
+  "unlock_requirement": "midnight_login",
+  "completion_bonus": 35,
+  "briefing": "A workstation used by a researcher at Northbridge Fictional Corp showed unusual system behavior after opening a suspicious archive. Inspect the simulated file metadata, running processes, startup entries, and network connections to separate real indicators from routine activity.",
+  "learning_objectives": [
+    "Examine simulated process lists, file metadata, startup entries, and network connections for malware indicators",
+    "Distinguish suspicious workstation activity from normal operating system and productivity tasks",
+    "Select an appropriate containment response and explain the reasoning"
+  ],
+  "evidence": [
+    {
+      "id": "ev_proc_01",
+      "type": "process_list",
+      "title": "Workstation Process & Startup Snapshot",
+      "content": "PID 1420 | updater_helper.exe | path=C:\\Users\\m.alvarez\\AppData\\Local\\Temp\\updater_helper.exe | parent=explorer.exe | startup_entry=HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\UpdaterHelper\nPID 2884 | outbound_conn=203.0.113.77:8443 | protocol=TCP | status=ESTABLISHED",
+      "is_key_clue": true,
+      "points": 15
+    },
+    {
+      "id": "ev_file_02",
+      "type": "file_metadata",
+      "title": "Dropped Script Metadata",
+      "content": "File: C:\\Users\\m.alvarez\\AppData\\Local\\Temp\\updater_helper.exe\nSigner: Unsigned (simulated indicator)\nCreated: 2026-11-21 09:14:02 UTC\nObserved Behavior: Writes temporary report bundle and initiates connection to 203.0.113.77:8443",
+      "is_key_clue": true,
+      "points": 15
+    },
+    {
+      "id": "ev_proc_03",
+      "type": "process_list",
+      "title": "Routine Office & System Activity",
+      "content": "PID 912 | notes_editor.exe | path=C:\\Program Files\\NorthbridgeNotes\\notes_editor.exe | status=RUNNING\nPID 1044 | local_sync_agent.exe | destination=10.20.2.10:443 | status=IDLE",
+      "is_key_clue": false,
+      "points": 0
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec_01",
+      "prompt": "After identifying an unsigned helper binary in a temporary folder with a startup entry and an outbound connection to 203.0.113.77:8443, what is the best immediate response?",
+      "options": [
+        "Leave the workstation online so the suspicious process keeps running",
+        "Isolate the workstation from the network, preserve evidence, and escalate to incident response/IT",
+        "Rename the suspicious file inside the Temp folder without notifying anyone"
+      ],
+      "correct_option_index": 1,
+      "points": 20,
+      "penalty": 10,
+      "feedback_correct": "Isolating the host from the network while preserving evidence helps contain potential malware activity and stops further outbound communication.",
+      "feedback_incorrect": "Leaving a potentially infected host connected or making ad-hoc file changes without containment can allow further spread or complicate investigation."
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "cost": 5,
+      "text": "Start by checking where executable files are running from and whether any new startup entries or outbound connections stand out."
+    },
+    {
+      "level": 2,
+      "cost": 10,
+      "text": "Compare the Temp folder process/connection and file metadata against normal office and local sync activity."
+    },
+    {
+      "level": 3,
+      "cost": 15,
+      "text": "Look closely at updater_helper.exe in AppData\\Local\\Temp, its Run key entry, and the connection to 203.0.113.77:8443."
+    },
+    {
+      "level": 4,
+      "cost": 20,
+      "text": "Malware indicators on a host often include unexpected executables in temporary paths, persistence via startup entries, and unusual external connections."
+    }
+  ],
+  "conclusion": {
+    "prompt": "Summarize the workstation indicators you found, why they are concerning, and what containment action you recommend.",
+    "required_keywords": ["process", "connection", "isolate"],
+    "points": 25
+  }
+}

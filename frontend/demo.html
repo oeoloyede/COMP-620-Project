@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>$title | Cyber Detective</title>
+  <style>
+* {
+  box-sizing:border-box
+}
+
+body {
+  margin:0;
+  background:#f5f3ec;
+  color:#182b28;
+  font:16px/1.55 "Source Sans 3","Segoe UI",sans-serif
+}
+
+header {
+  background:#143f3d;
+  color:white;
+  padding:15px max(5vw,24px);
+  display:flex;
+  justify-content:space-between;
+  align-items:center
+}
+
+header b {
+  letter-spacing:.015em;
+  font-size:1.2rem
+}
+
+header span,.marked,small {
+  font:600 .79rem/1.5 "IBM Plex Mono",Consolas,monospace
+}
+
+main {
+  max-width:1180px;
+  margin:auto;
+  padding:34px 5vw 60px
+}
+
+h1 {
+  font:500 clamp(2.4rem,5vw,4.5rem)/1.05 "Spectral",Georgia,serif;
+  margin:0 0 14px
+}
+
+.brief {
+  max-width:76ch;
+  margin-bottom:28px
+}
+
+.layout {
+  display:grid;
+  grid-template-columns:1.2fr 1fr;
+  gap:30px;
+  align-items:start
+}
+
+h2 {
+  font:600 1.45rem "Spectral",Georgia,serif;
+  margin:0 0 14px
+}
+
+aside h2:not(:first-child) {
+  margin-top:26px
+}
+
+h3 {
+  font-size:1.1rem;
+  margin:4px 0 8px
+}
+
+article,aside {
+  background:#fffef9;
+  border:1px solid #cdd7cd;
+  border-radius:8px;
+  padding:20px;
+  margin-bottom:14px
+}
+
+article {
+  border-left:4px solid #51827b
+}
+
+small,.marked {
+  color:#29665e
+}
+
+article small {
+  text-transform:uppercase
+}
+
+pre {
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  font:inherit;
+  margin:0 0 14px
+}
+
+button {
+  border:0;
+  border-radius:5px;
+  background:#18524e;
+  color:white;
+  font-weight:600;
+  font-family:inherit;
+  font-size:.94rem;
+  padding:9px 15px;
+  cursor:pointer
+}
+
+button:hover {
+  background:#103e39
+}
+
+form+form {
+  margin:12px 0
+}
+
+select,textarea {
+  display:block;
+  width:100%;
+  font:inherit;
+  border:1px solid #9aaea7;
+  border-radius:5px;
+  padding:7px;
+  margin:4px 0 10px
+}
+
+textarea {
+  min-height:66px
+}
+
+fieldset {
+  border:0;
+  padding:0;
+  margin:0 0 10px
+}
+
+legend {
+  font-weight:600;
+  margin-bottom:8px
+}
+
+.choice {
+  display:flex;
+  gap:8px;
+  align-items:baseline;
+  margin-bottom:7px
+}
+
+.notice {
+  background:#dfebe1;
+  padding:12px 15px;
+  border-left:4px solid #29665e
+}
+
+li {
+  margin-bottom:6px
+}
+
+@media(max-width:720px) {
+  .layout {
+    grid-template-columns:1fr;
+    gap:8px
+  }
+
+  main {
+    padding:24px 18px
+  }
+
+
+}
+  </style>
+</head>
+<body>
+  <header><b>Cyber Detective</b><span>Score &nbsp; $score</span></header>
+  <main>
+    <h1>$title</h1>
+    <p class="brief">$briefing</p>
+    $notice
+    <div class="layout">
+      <section><h2>Evidence file</h2>$evidence</section>
+      <aside>$actions</aside>
+    </div>
+  </main>
+</body>
+</html>
