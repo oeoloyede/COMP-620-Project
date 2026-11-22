@@ -196,3 +196,23 @@ def test_complete_case_awards_bonus_and_unlocks_next_case(engine: GameEngine, tm
     reloaded = GameEngine(cases_dir=engine.cases_dir, db_path=engine.db_path)
     next_state = reloaded.start_case(player_id="player_1", case_id="midnight_login")
     assert next_state["case_id"] == "midnight_login"
+
+
+def test_case_order_and_completion_require_the_investigation_decision(engine: GameEngine):
+    player = "student"
+    first = "suspicious_email"
+    second = "midnight_login"
+    conclusion = "This is phishing using a lookalike domain."
+    assert [case["case_id"] for case in engine.list_cases(player)] == [first, second]
+    engine.start_case(player, first)
+    assert engine.complete_case(player, first, conclusion)["completed"] is False
+    engine.evaluate_decision(player, first, "dec_phishing", "opt_ignore")
+    assert engine.complete_case(player, first, conclusion)["completed"] is False
+    with pytest.raises(PermissionError):
+        engine.get_case_details(player, second)
+    engine.evaluate_decision(player, first, "dec_phishing", "opt_quarantine")
+    with pytest.raises(ValueError, match="already been solved"):
+        engine.evaluate_decision(player, first, "dec_phishing", "opt_ignore")
+    summary = engine.complete_case(player, first, conclusion)
+    assert summary["unlocked_cases"] == [second]
+    assert summary["score"] == 95
